@@ -1,5 +1,6 @@
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
+require('dotenv').config()
 
 const { Client } = require('whatsapp-web.js');
 const client = new Client();
@@ -39,7 +40,7 @@ const axiosInstance = axios.create({
     headers: headers
 });
 
-const getOpenAIResponse = async (msg) => {
+const getOpenAIResponse = async (msg:string) => {
     try {
         const body = {
             "model": "gpt-4-0125-preview",
