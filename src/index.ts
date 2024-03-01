@@ -1,5 +1,6 @@
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
+
 require('dotenv').config()
 
 const { Client } = require('whatsapp-web.js');
@@ -55,5 +56,6 @@ const getOpenAIResponse = async (msg:string) => {
     }
 };
 
-client.initialize();
- 
+
+// client.initialize();
+getOpenAIResponse('asdasdasd');
