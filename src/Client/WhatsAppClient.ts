@@ -1,5 +1,6 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
-import { ChatEventEmitter } from "./events/ChatEventEmitter";
+import { ChatService } from "./events/ChatService";
+import { ChatManager } from "../Managers/ChatManager";
 
 /**
  * Class WhatsAppClient
@@ -9,9 +10,9 @@ import { ChatEventEmitter } from "./events/ChatEventEmitter";
 class WhatsAppClient {
   private static instance: WhatsAppClient;
   private static session_client: Client;
-  private static eventEmitter: ChatEventEmitter;
+  private static eventEmitter: ChatService;
 
-  constructor(sessionClient: Client, chatEventManager: ChatEventEmitter) {
+  constructor(sessionClient: Client, chatEventManager: ChatService) {
     sessionClient.initialize();
     WhatsAppClient.session_client = sessionClient;
     WhatsAppClient.eventEmitter = chatEventManager;
@@ -32,7 +33,7 @@ class WhatsAppClient {
 
       this.instance = new WhatsAppClient(
         WhatsAppSessionClient,
-        new ChatEventEmitter(WhatsAppSessionClient),
+        new ChatService(WhatsAppSessionClient, new ChatManager()),
       );
     } else {
       throw new Error("Já existe uma instância do WhatsAppClient");
