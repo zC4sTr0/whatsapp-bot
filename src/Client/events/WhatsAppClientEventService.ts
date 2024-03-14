@@ -1,6 +1,7 @@
 /**
- * Class ChatService
+ * Class WhatsAppClientEventService
  * Responsável por abstrair e tomar decisões baseadas em eventos de chat (contato, conversa, etc.)
+ * Cada WhatsAppClient possui o seu EventService, que é responsável por responder eventos desse client em específico
  */
 
 import WAWebJS, { Client } from "whatsapp-web.js";
@@ -8,7 +9,7 @@ import qrcode from "qrcode-terminal";
 import { ChatManager } from "../Managers/ChatManager";
 import { ChatClient } from "../Managers/ChatClient";
 
-class ChatService {
+class WhatsAppClientEventService {
   private client: Client;
   private conversationListManager: ChatManager;
 
@@ -34,6 +35,7 @@ class ChatService {
   }
 
   private qrCodeHandler(qrCode: string) {
+    console.log("Gerando QRCode...");
     qrcode.generate(qrCode, { small: true });
   }
 
@@ -51,11 +53,13 @@ class ChatService {
     }
     this.client = session_client;
     this.conversationListManager = conversationManager;
-    this.chatMessageHandler = this.chatMessageHandler.bind(this);
-    session_client.on("message", this.chatMessageHandler);
-    session_client.on("ready", this.statusHandler);
-    session_client.on("qr", this.qrCodeHandler);
+
+    //utilizar arrow notation aqui é importante por causa da forma que o js herda o contexto.
+    //Caso não seja usado arrow notation, é necessário ajustar o this com bind.
+    session_client.on("message", (msg) => this.chatMessageHandler(msg));
+    session_client.on("ready", () => this.statusHandler);
+    session_client.on("qr", (qr) => this.qrCodeHandler(qr));
   }
 }
 
-export { ChatService };
+export { WhatsAppClientEventService };

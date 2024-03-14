@@ -24,7 +24,7 @@ class ChatClient {
   }
 
   public answer(message: WAWebJS.Message) {
-    this.conversation.sendMessage("recebi uma mensaem de: " + message.from);
+    this.conversation.sendMessage("recebi uma mensagem de: " + message.from);
   }
 }
 
