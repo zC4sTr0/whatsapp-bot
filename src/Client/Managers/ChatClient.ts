@@ -22,6 +22,10 @@ class ChatClient {
   public getConversation(): WAWebJS.Chat {
     return this.conversation;
   }
+
+  public answer(message: WAWebJS.Message) {
+    this.conversation.sendMessage("recebi uma mensaem de: " + message.from);
+  }
 }
 
 export { ChatClient };

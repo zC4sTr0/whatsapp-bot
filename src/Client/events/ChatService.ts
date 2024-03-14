@@ -5,8 +5,8 @@
 
 import WAWebJS, { Client } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
-import { ChatManager } from "../../Managers/ChatManager";
-import { ChatClient } from "../../Managers/ChatClient";
+import { ChatManager } from "../Managers/ChatManager";
+import { ChatClient } from "../Managers/ChatClient";
 
 class ChatService {
   private client: Client;
@@ -29,6 +29,8 @@ class ChatService {
       console.log("Chat não encontrado");
       return;
     }
+
+    chat.answer(msg);
   }
 
   private qrCodeHandler(qrCode: string) {
@@ -40,8 +42,16 @@ class ChatService {
   }
 
   constructor(session_client: Client, conversationManager: ChatManager) {
+    if (!session_client) {
+      throw new Error("session_client está nulo");
+    }
+
+    if (!conversationManager) {
+      throw new Error("conversationManager nulo");
+    }
     this.client = session_client;
     this.conversationListManager = conversationManager;
+    this.chatMessageHandler = this.chatMessageHandler.bind(this);
     session_client.on("message", this.chatMessageHandler);
     session_client.on("ready", this.statusHandler);
     session_client.on("qr", this.qrCodeHandler);
