@@ -1,6 +1,6 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
 import { ChatService } from "./events/ChatService";
-import { ChatManager } from "../Managers/ChatManager";
+import { ChatManager } from "./Managers/ChatManager";
 
 /**
  * Class WhatsAppClient
@@ -27,13 +27,14 @@ class WhatsAppClient {
       const WhatsAppSessionClient: Client = new Client({
         authStrategy: new LocalAuth(),
         puppeteer: {
-          headless: show_navigator,
+          headless: !show_navigator,
         },
       });
+      const manager: ChatManager = new ChatManager();
 
       this.instance = new WhatsAppClient(
         WhatsAppSessionClient,
-        new ChatService(WhatsAppSessionClient, new ChatManager()),
+        new ChatService(WhatsAppSessionClient, manager),
       );
     } else {
       throw new Error("Já existe uma instância do WhatsAppClient");
