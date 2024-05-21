@@ -1,24 +1,46 @@
-import { Action } from "../Actions/action";
+import { Action } from "../Actions/ExecuteAction";
 import { TreeNode } from "./TreeNode";
 
 class Tree {
-  constructor(public root: TreeNode) {}
+  private currentPath: string[] = [];
+  private currentNode: TreeNode;
+
+  constructor(public root: TreeNode) {
+    this.currentNode = root;
+  }
 
   navigate(inputSequence: string[]): void {
-    let currentNode: TreeNode | Action | undefined = this.root;
     for (const input of inputSequence) {
-      if (currentNode instanceof TreeNode) {
-        console.log(currentNode.message);
-        currentNode = currentNode.getOption(input);
-      } else if (typeof currentNode === "function") {
-        currentNode();
+      const next: TreeNode | Action | undefined =
+        this.currentNode.getOption(input);
+      if (next instanceof TreeNode) {
+        this.currentPath.push(input); // Update the path
+        this.currentNode = next; // Move to the next node
+        console.log(next.message);
+      } else if (typeof next === "function") {
+        next(); // Execute the action
         return;
+      } else {
+        console.log("Invalid selection");
       }
     }
+  }
 
-    if (currentNode instanceof TreeNode) {
-      console.log(currentNode.message);
+  // Go back to the previous menu item
+  back(): void {
+    if (this.currentPath.length > 0) {
+      this.currentPath.pop();
+      this.reset();
+      this.navigate(this.currentPath.slice());
+    } else {
+      console.log("Already at the root menu.");
     }
+  }
+
+  reset(): void {
+    this.currentPath = [];
+    this.currentNode = this.root;
+    console.log(this.root.message);
   }
 }
 
